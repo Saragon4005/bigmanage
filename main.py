@@ -3,14 +3,12 @@
 import os
 import discord
 
-from dotenv import load_dotenv
 
 import logger
 from discord.ext import commands
 
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.environ.get('DISCORD_TOKEN')
 
 
 logger.start()
