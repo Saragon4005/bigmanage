@@ -1,6 +1,4 @@
-import random, sys, math, multiprocessing, lzma, hashlib, glob
-from multiprocessing.dummy import Pool as ThreadPool
-CpuCoreCount = multiprocessing.cpu_count()
+import random, math, lzma, hashlib
 
 def pack(byte): 
 	return int(byte, 2)
@@ -11,30 +9,22 @@ def unpack(bits):
  
 def fromfile(byte): 
 	bytelen = len(byte)
-	if runthreaded:
-		with ThreadPool(CpuCoreCount) as pool:
-			byte = "".join(pool.map(unpack, byte))
-	else:
-		bits = ""
-		rate = math.ceil(len(byte)/1001)
-		for index, i in enumerate(byte):
-			dat = str(bin(i)).split("b")[1]
-			dat = ((8-len(dat))*"0")+dat
-			bits+=dat
-		byte = bits			 
+	bits = ""
+	rate = math.ceil(len(byte)/1001)
+	for index, i in enumerate(byte):
+		dat = str(bin(i)).split("b")[1]
+		dat = ((8-len(dat))*"0")+dat
+		bits+=dat
+	byte = bits			 
 	return byte
 
 def tofile(outputData): 
 	outputData = [outputData[i*8:i*8+8] for i in range(int(len(outputData)/8))]
-	if runthreaded:
-		with ThreadPool(CpuCoreCount) as pool:
-			outputData = bytes(pool.map(pack, outputData))
-	else:
-		byte = []
-		rate = math.ceil(len(outputData)/1001)
-		for index, i in enumerate(outputData):
-			byte.append(int(i, 2))
-		outputData = bytes(byte)
+	byte = []
+	rate = math.ceil(len(outputData)/1001)
+	for index, i in enumerate(outputData):
+		byte.append(int(i, 2))
+	outputData = bytes(byte)
 	return outputData
 
 def runskip(indata,key,gatepos): 
@@ -92,14 +82,10 @@ def runoffset(data,key1,key2,key3):
 		while printls.index(i)+tmpkey >= len(printls):
 			tmpkey -= len(printls)
 		eprintdct[i] = printls[printls.index(i)+tmpkey]
-	if runthreaded:
-		with ThreadPool(CpuCoreCount) as pool:
-			data = "".join(pool.map(offsetter, data))
-	else:
-		out = []
-		for index, i in enumerate(data):
-			out.append(offsetter(i))
-		data = "".join(out)
+	out = []
+	for index, i in enumerate(data):
+		out.append(offsetter(i))
+	data = "".join(out)
 	return data
 
 def rundeoffset(data,key1,key2,key3):
@@ -117,14 +103,10 @@ def rundeoffset(data,key1,key2,key3):
 		while printls.index(i)-tmpkey < 0:
 			tmpkey -= len(printls)
 		dprintdct[i] = printls[printls.index(i)-tmpkey] 
-	if runthreaded: 
-		with ThreadPool(CpuCoreCount) as pool:
-			data = "".join(pool.map(unoffsetter, data))
-	else:
-		out = []
-		for index, i in enumerate(data):
-			out.append(unoffsetter(i))
-		data = "".join(out)
+	out = []
+	for index, i in enumerate(data):
+		out.append(unoffsetter(i))
+	data = "".join(out)
 	return data
 
 def skippingencode(data, lkey): 
@@ -162,8 +144,6 @@ def rundecode(inputfilename, outputfile, key):
 		inputfile = fromfile(txt.read())
 	with open(outputfile, "wb+") as txt:
 		txt.write(tofile(skippingdecode(inputfile,key)))
-
-runthreaded = False
 
 
 class fileio: # object format fileio wrapper for SKCY11X, includes LZMA compression and sha256 checksumming
