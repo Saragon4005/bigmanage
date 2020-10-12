@@ -173,9 +173,9 @@ class fileio: # object format fileio wrapper for SKCY11X, includes LZMA compress
 		prehash = hashlib.sha256(password.encode("utf8")).digest()
 		self.password = hex(int.from_bytes(prehash, "big"))[2:22]
 
-	def write(self, towrite):
+	def write(self, towrite: bytes):
 		writeto = open(self.filename, "wb") 
-		compressed = lzma.compress(towrite.encode("utf8"))
+		compressed = lzma.compress(towrite)
 		shahash = hashlib.sha256(compressed).digest()
 		encrypted = tofile(skippingencode(fromfile(compressed), self.password))
 		writeto.write(b"SKCY11Xof\x00")
