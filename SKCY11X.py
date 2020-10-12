@@ -167,13 +167,18 @@ runthreaded = False
 
 
 class fileio: # object format fileio wrapper for SKCY11X, includes LZMA compression and sha256 checksumming
-	
-	def __init__(self, filename, password):
+
+	def __enter__(self, filename, password): # with operator init
 		self.filename = filename
 		prehash = hashlib.sha256(password.encode("utf8")).digest()
 		self.password = hex(int.from_bytes(prehash, "big"))[2:22]
 
-	def write(self, towrite: bytes):
+	def __init__(self, filename, password): # init data
+		self.filename = filename
+		prehash = hashlib.sha256(password.encode("utf8")).digest()
+		self.password = hex(int.from_bytes(prehash, "big"))[2:22]
+
+	def write(self, towrite: bytes): # writes to file
 		writeto = open(self.filename, "wb") 
 		compressed = lzma.compress(towrite)
 		shahash = hashlib.sha256(compressed).digest()
@@ -183,7 +188,7 @@ class fileio: # object format fileio wrapper for SKCY11X, includes LZMA compress
 		writeto.write(encrypted)
 		writeto.close()
 
-	def read(self):
+	def read(self): # reads from file
 		readfrom = open(self.filename, "rb")
 		if readfrom.read(10) == b"SKCY11Xof\x00":
 			testhash = readfrom.read(32)
@@ -192,7 +197,16 @@ class fileio: # object format fileio wrapper for SKCY11X, includes LZMA compress
 			if hashlib.sha256(data).digest() == testhash:
 				return lzma.decompress(data)
 			else:
-				raise RuntimeError("The decrypted data does not match the SHA256 hash")
+				raise ValueError("The decrypted data does not match the SHA256 hash")
 		else:
 			readfrom.close()
 			raise TypeError("The requested file is not a supported SKCY11X object format version, or in SKCY11X object format")
+	
+	def __exit__(self): # with operator deletes obj params
+		del self.password
+		del self.filename
+
+	def close(self): # deletes obj params
+		del self.password
+		del self.filename
+
