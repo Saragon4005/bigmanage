@@ -1,4 +1,4 @@
-import random, math, lzma, hashlib
+import random, lzma, hashlib
 
 def pack(byte): 
 	return int(byte, 2)
@@ -10,7 +10,6 @@ def unpack(bits):
 def fromfile(byte): 
 	bytelen = len(byte)
 	bits = ""
-	rate = math.ceil(len(byte)/1001)
 	for index, i in enumerate(byte):
 		dat = str(bin(i)).split("b")[1]
 		dat = ((8-len(dat))*"0")+dat
@@ -21,7 +20,6 @@ def fromfile(byte):
 def tofile(outputData): 
 	outputData = [outputData[i*8:i*8+8] for i in range(int(len(outputData)/8))]
 	byte = []
-	rate = math.ceil(len(outputData)/1001)
 	for index, i in enumerate(outputData):
 		byte.append(int(i, 2))
 	outputData = bytes(byte)
