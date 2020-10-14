@@ -1,15 +1,19 @@
 #!/usr/bin/python3.8
 # import atexit
-import os
+print("BIGMANAGE BOT X20201014") # X means borked, B is beta, R is release
+import os, getpass
 import discord
 
 
 import logger
 from discord.ext import commands
 
+import SKCY11X
 
-TOKEN = os.environ.get('DISCORD_TOKEN')
-
+print("INIT_TOKEN")
+TOKENFILE = SKCY11X.fileio(".bot_token", getpass.getpass())
+TOKEN = TOKENFILE.read().decode("utf8")
+TOKENFILE.close()
 
 logger.start()
 
@@ -53,7 +57,7 @@ async def on_member_join(member: discord.Member):
 @bot.event
 async def on_message(message: discord.Message):
     if message.author == bot.user:
-        return
+        return 0
     try:
         await bot.process_commands(message)
     except AttributeError:
