@@ -124,7 +124,10 @@ def skippingdecode(data, lkey):
 	data = rundeoffset(data,lkey[7],lkey[8],lkey[9])
 	data = [i for i in data]
 	for i in range(lkey[5]*16):
+            try:
 		del data[-1]
+            except IndexError: # error in small files with wrong passwords
+                raise ValueError("The decrypted data does not match the SHA256 hash")
 	data = (unskip(data, lkey[1], False))
 	data = (unskip(data, lkey[0]+lkey[6], True))
 	data = "".join(data)
