@@ -8,10 +8,10 @@ import discord
 import logger
 from discord.ext import commands
 
-import SKCY11X
+from SKCY11X import fileio as SKCYfileio
 
 print("INIT_TOKEN")
-TOKENFILE = SKCY11X.fileio(".bot_token", getpass.getpass())
+TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())
 TOKEN = TOKENFILE.read().decode("utf8")
 TOKENFILE.close()
 
