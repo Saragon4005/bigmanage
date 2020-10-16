@@ -1,7 +1,6 @@
-#!/usr/bin/python3.8
 # import atexit
-print("BIGMANAGE BOT X20201014") # X means borked, B is beta, R is release
-import os, getpass
+
+import getpass
 import discord
 
 
@@ -9,6 +8,8 @@ import logger
 from discord.ext import commands
 
 from SKCY11X import fileio as SKCYfileio
+
+print("BIGMANAGE BOT X20201014") # X means borked, B is beta, R is release
 
 print("INIT_TOKEN")
 TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())
