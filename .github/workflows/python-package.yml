@@ -35,5 +35,5 @@ jobs:
     - name: Format with yapf
       run: |
         # --diff will return zero if file is fomatted to spefications
-        yapf . --diff --recursive
-    
+        formating=$(yapf . --diff --recursive)
+        echo "::warning:: $formating"
