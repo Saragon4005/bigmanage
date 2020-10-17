@@ -10,17 +10,13 @@ from SKCY11X import fileio as SKCYfileio
 
 print("BIGMANAGE BOT X20201014")  # X means borked, B is beta, R is release
 
-print("INIT_TOKEN")
-TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())
-TOKEN = TOKENFILE.read().decode("utf8")
-TOKENFILE.close()
-
 logger.start()
 
-# initialize discord bot
-bot = commands.Bot(command_prefix='%', description='', case_insensitive=True)
+intents = discord.Intents(guild_messages=True, guilds=True)
 
-bot.run(TOKEN)
+
+# initialize discord bot
+bot = commands.Bot(command_prefix='%', description='', case_insensitive=True, intents=intents)
 
 
 @bot.command(name="test", help="Responds with 'works!'")
@@ -48,8 +44,7 @@ async def on_member_join(member: discord.Member):
         channel = bot.get_channel(660987946085646367)
         await channel.send(f'Welcome {member.name}!')
 '''
-
-
+'''
 @bot.event
 async def on_message(message: discord.Message):
 	if message.author == bot.user:
@@ -58,6 +53,7 @@ async def on_message(message: discord.Message):
 		await bot.process_commands(message)
 	except AttributeError:
 		print("Could not process commands \n" "This is could be due to bot not being started \n" "This is normal for testing")
+'''
 
 
 @bot.event
@@ -71,6 +67,7 @@ async def on_error(event, *args, **kwargs):
 async def on_command_error(ctx, error):
 	await ctx.send(error)
 	print(error)
+	raise (error.with_traceback)
 
 
 '''
@@ -80,3 +77,8 @@ def exit_handler():
 
 atexit.register(exit_handler)
 '''
+
+print("INIT_TOKEN")
+TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())
+bot.run(TOKENFILE.read().decode("utf8"))
+TOKENFILE.close()
