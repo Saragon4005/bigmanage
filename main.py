@@ -43,7 +43,8 @@ async def on_member_join(member: discord.Member):
         channel = bot.get_channel(660987946085646367)
         await channel.send(f'Welcome {member.name}!')
 '''
-'''
+
+
 @bot.event
 async def on_message(message: discord.Message):
 	if message.author == bot.user:
@@ -52,7 +53,6 @@ async def on_message(message: discord.Message):
 		await bot.process_commands(message)
 	except AttributeError:
 		print("Could not process commands \n" "This is could be due to bot not being started \n" "This is normal for testing")
-'''
 
 
 @bot.event
