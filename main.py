@@ -8,12 +8,11 @@ from discord.ext import commands
 
 from SKCY11X import fileio as SKCYfileio
 
-print("BIGMANAGE BOT X20201014")  # X means borked, B is beta, R is release
+print("BIGMANAGE BOT B20201016.0")  # X means borked, B is beta, R is release
 
 logger.start()
 
 intents = discord.Intents(guild_messages=True, guilds=True)
-
 
 # initialize discord bot
 bot = commands.Bot(command_prefix='%', description='', case_insensitive=True, intents=intents)
