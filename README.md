@@ -10,4 +10,4 @@ After all this is done main.py needs to be executed using Python
 # Features
 
 ## Bulk Channel Role Distribution
-manage large amounts of channels with bulk role distribution that can be categorized and inherited from category, for example if you had a category `##games` with channels `#games-general`, `#minecraft`, and `#tetris` you can set so the `@minecraft` role gives +r acess to all the channels in category `##games` and then configure +w perms in `#minecraft` and `#games-general`, this skips having to manually set read perms to all 3 channels, because categories are not monolithic, you can also configure `##minecraft` group to include `#minecraft` and `#games-general` and just add +w perms to that group instead, and the bot will give the same output, using this modular design you can theoretically manage complex channel groups and permissions using simple categories
+manage large amounts of channels and roleperms by grouping channels into channel groups and treating their permissions as one channel, potentially saving hours of adding a new role, like a moderator role, to all the channels individually.
