@@ -42,7 +42,7 @@ async def edit(ctx, channel, msg_id, *message):
 
 @bot.event
 async def on_ready():
-	print(f'{bot.user} is connected to Discord\n' f'With {bot.command_prefix} as prefix\n' f"Can be mentioned with <@!{bot.user.id}>")
+	print(f"{bot.user} is connected to Discord \nWith {bot.command_prefix} as prefix \nCan be mentioned with <@!{bot.user.id}>")
 
 
 @bot.event
@@ -68,7 +68,7 @@ async def on_message(message: discord.Message):
 	try:
 		await bot.process_commands(message)
 	except AttributeError:
-		print("Could not process commands \n" "This is could be due to bot not being started \n" "This is normal for testing")
+		print("Could not process commands \nThis is could be due to bot not being started \nThis is normal for testing")
 
 
 @bot.event
