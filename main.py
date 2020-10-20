@@ -13,9 +13,10 @@ print("BIGMANAGE BOT B20201016.0")  # X means borked, B is beta, R is release
 logger.start()
 
 intents = discord.Intents(guild_messages=True, guilds=True)
+allowedMentions = discord.AllowedMentions(everyone=False, users=False, roles=False)
 
 # initialize discord bot
-bot = commands.Bot(command_prefix='%', description='', case_insensitive=True, intents=intents)
+bot = commands.Bot(command_prefix='%', description='', case_insensitive=True, intents=intents, allowed_mentions=allowedMentions)
 
 
 @bot.command(name="test", help="Responds with 'works!'")
@@ -29,6 +30,14 @@ async def test(ctx: commands.Context):
 async def write(ctx, channel, *message):
 	channel = await bot.fetch_channel(channel.strip("<#>"))
 	await channel.send(" ".join(message))
+
+
+@bot.command(name="edit", help="(channel, msg_id, message) Edits a specified message, must be Admin to use.")
+@commands.has_permissions(administrator=True)
+async def edit(ctx, channel, msg_id, *message):
+	channel = await bot.fetch_channel(channel.strip("<#>"))
+	msg_id: discord.Message = await channel.fetch_message(msg_id)
+	await msg_id.edit(content=" ".join(message))
 
 
 @bot.event
