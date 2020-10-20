@@ -24,6 +24,13 @@ async def test(ctx: commands.Context):
 	await ctx.send("works!")
 
 
+@bot.command(name="write", help="Sends a message to the specified channel, must be Admin to use.")
+@commands.has_permissions(administrator=True)
+async def write(ctx, channel, *message):
+	channel = await bot.fetch_channel(channel.strip("<#>"))
+	await channel.send(" ".join(message))
+
+
 @bot.event
 async def on_ready():
 	print(f'{bot.user} is connected to Discord\n' f'With {bot.command_prefix} as prefix\n' f"Can be mentioned with <@!{bot.user.id}>")
