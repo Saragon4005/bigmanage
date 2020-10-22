@@ -7,7 +7,7 @@ from discord.ext import commands
 
 from SKCY11X import fileio as SKCYfileio
 
-print("BIGMANAGE BOT R20201021.1")  # X means borked, B is beta, R is release
+print("BIGMANAGE BOT R20201022.0")  # X means borked, B is beta, R is release
 
 logger.start()
 
@@ -78,8 +78,8 @@ async def on_error(event, *args, **kwargs):
 
 
 @bot.event
-async def on_command_error(ctx, error):
-	await ctx.send(error)
+async def on_command_error(ctx: commands.Context, error):
+	await ctx.send(error, delete_after=5)
 	print(error)
 	raise (error.with_traceback)
 
