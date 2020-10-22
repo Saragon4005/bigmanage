@@ -8,7 +8,7 @@ from discord.ext import commands
 
 from SKCY11X import fileio as SKCYfileio
 
-print("BIGMANAGE BOT B20201019.0")  # X means borked, B is beta, R is release
+print("BIGMANAGE BOT B20201021.0")  # X means borked, B is beta, R is release
 
 logger.start()
 
@@ -27,17 +27,33 @@ async def test(ctx: commands.Context):
 
 @bot.command(name="write", help="Sends a message to the specified channel, must be Admin to use.")
 @commands.has_permissions(administrator=True)
-async def write(ctx, channel, *message):
+async def write(ctx, channel):
+	cmdlen = 1
 	channel = await bot.fetch_channel(channel.strip("<#>"))
-	await channel.send(" ".join(message))
+	output = []
+	for a, i in enumerate(ctx.message.content.split(" ")):
+		if i or a > cmdlen:
+			if a > cmdlen:
+				output.append(i)
+		else:
+			cmdlen += 1
+	await channel.send(" ".join(output))
 
 
 @bot.command(name="edit", help="(channel, msg_id, message) Edits a specified message, must be Admin to use.")
 @commands.has_permissions(administrator=True)
-async def edit(ctx, channel, msg_id, *message):
+async def edit(ctx, channel, msg_id):
+	cmdlen = 2
 	channel = await bot.fetch_channel(channel.strip("<#>"))
 	msg_id: discord.Message = await channel.fetch_message(msg_id)
-	await msg_id.edit(content=" ".join(message))
+	output = []
+	for a, i in enumerate(ctx.message.content.split(" ")):
+		if i or a > cmdlen:
+			if a > cmdlen:
+				output.append(i)
+		else:
+			cmdlen += 1
+	await msg_id.edit(content=" ".join(output))
 
 
 @bot.event
@@ -85,15 +101,7 @@ async def on_command_error(ctx, error):
 	raise (error.with_traceback)
 
 
-'''
-def exit_handler():
-    # exit stuff
-
-
-atexit.register(exit_handler)
-'''
-
 print("INIT_TOKEN")
 TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())
 bot.run(TOKENFILE.read().decode("utf8"))
-TOKENFILE.close()
+print("Bot has turned off")
