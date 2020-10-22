@@ -9,5 +9,8 @@ After all this is done main.py needs to be executed using Python
 
 # Features
 
+## Bot Based Messages
+Send and edit messages by the bot, so any administrator can edit the message sent, not just the one who originally wrote it.
+
 ## Bulk Channel Role Distribution
-manage large amounts of channels and roleperms by grouping channels into channel groups and treating their permissions as one channel, potentially saving hours of adding a new role, like a moderator role, to all the channels individually.
+Manage large amounts of channels and roleperms by grouping channels into channel groups and treating their permissions as one channel, potentially saving hours of adding a new role, like a moderator role, to all the channels individually.
