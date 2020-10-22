@@ -1,8 +1,7 @@
-# import atexit
-
 import getpass
-import discord
+import utils
 
+import discord
 import logger
 from discord.ext import commands
 
@@ -27,33 +26,17 @@ async def test(ctx: commands.Context):
 
 @bot.command(name="write", help="Sends a message to the specified channel, must be Admin to use.")
 @commands.has_permissions(administrator=True)
-async def write(ctx, channel):
-	cmdlen = 1
+async def write(ctx: commands.Context, channel):
 	channel = await bot.fetch_channel(channel.strip("<#>"))
-	output = []
-	for a, i in enumerate(ctx.message.content.split(" ")):
-		if i or a > cmdlen:
-			if a > cmdlen:
-				output.append(i)
-		else:
-			cmdlen += 1
-	await channel.send(" ".join(output))
+	await channel.send(utils.getMessage(ctx))
 
 
 @bot.command(name="edit", help="(channel, msg_id, message) Edits a specified message, must be Admin to use.")
 @commands.has_permissions(administrator=True)
 async def edit(ctx, channel, msg_id):
-	cmdlen = 2
 	channel = await bot.fetch_channel(channel.strip("<#>"))
 	msg_id: discord.Message = await channel.fetch_message(msg_id)
-	output = []
-	for a, i in enumerate(ctx.message.content.split(" ")):
-		if i or a > cmdlen:
-			if a > cmdlen:
-				output.append(i)
-		else:
-			cmdlen += 1
-	await msg_id.edit(content=" ".join(output))
+	await msg_id.edit(content=utils.getMessage(ctx))
 
 
 @bot.event
