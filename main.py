@@ -1,5 +1,6 @@
 import getpass
 import utils
+import glob, json
 
 import discord
 import logger
@@ -7,7 +8,7 @@ from discord.ext import commands
 
 from SKCY11X import fileio as SKCYfileio
 
-print("BIGMANAGE BOT R20201022.0")  # X means borked, B is beta, R is release
+print("BIGMANAGE BOT B20201022.1")  # X means borked, B is beta, R is release
 
 logger.start()
 
@@ -43,6 +44,13 @@ async def edit(ctx: commands.Context, channel, msg_id):
 		await msg_id.edit(content=utils.getMessage(ctx))
 	else:
 		raise UnboundLocalError("Refrenced a channel outsite of the scope of the current guild")
+
+@bot.command(name="mkgroup", help="(*name) makes new channel group(s), must be Admin to use.")
+@commands.has_permissions(administrator=True)
+async def mkgroup(ctx: commands.Context, *groupname): # this is beta dont use it
+	for i in groupname:
+		rootdatabase[ctx.guild]["channelGroups"][i] = []
+	
 
 
 @bot.event
@@ -89,6 +97,13 @@ async def on_command_error(ctx: commands.Context, error):
 	print(error)
 	raise (error.with_traceback)
 
+#print("INIT_DB")
+databases = glob.glob("database/*.SKCYDB")
+if databases: # atm this loads any db, fix to load most recent later
+	database = SKCYfileio(databases[0], getpass.getpass())
+	rootdatabase = json.loads(database.read().decode("utf8"))
+else:
+	pass # add this later
 
 print("INIT_TOKEN")
 TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())

@@ -133,3 +133,6 @@ dmypy.json
 
 #bot token
 .bot_token
+
+#database
+database/
