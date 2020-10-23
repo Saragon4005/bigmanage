@@ -28,15 +28,21 @@ async def test(ctx: commands.Context):
 @commands.has_permissions(administrator=True)
 async def write(ctx: commands.Context, channel):
 	channel = await bot.fetch_channel(channel.strip("<#>"))
-	await channel.send(utils.getMessage(ctx))
+	if ctx.guild == channel.guild:
+		await channel.send(utils.getMessage(ctx))
+	else:
+		raise UnboundLocalError("Refrenced a channel outsite of the scope of the current guild")
 
 
 @bot.command(name="edit", help="(channel, msg_id, message) Edits a specified message, must be Admin to use.")
 @commands.has_permissions(administrator=True)
-async def edit(ctx, channel, msg_id):
+async def edit(ctx: commands.Context, channel, msg_id):
 	channel = await bot.fetch_channel(channel.strip("<#>"))
-	msg_id: discord.Message = await channel.fetch_message(msg_id)
-	await msg_id.edit(content=utils.getMessage(ctx))
+	if ctx.guild == channel.guild:
+		msg_id: discord.Message = await channel.fetch_message(msg_id)
+		await msg_id.edit(content=utils.getMessage(ctx))
+	else:
+		raise UnboundLocalError("Refrenced a channel outsite of the scope of the current guild")
 
 
 @bot.event
