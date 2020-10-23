@@ -45,12 +45,12 @@ async def edit(ctx: commands.Context, channel, msg_id):
 	else:
 		raise UnboundLocalError("Refrenced a channel outsite of the scope of the current guild")
 
+
 @bot.command(name="mkgroup", help="(*name) makes new channel group(s), must be Admin to use.")
 @commands.has_permissions(administrator=True)
-async def mkgroup(ctx: commands.Context, *groupname): # this is beta dont use it
+async def mkgroup(ctx: commands.Context, *groupname):  # this is beta dont use it
 	for i in groupname:
 		rootdatabase[ctx.guild]["channelGroups"][i] = []
-	
 
 
 @bot.event
@@ -97,13 +97,14 @@ async def on_command_error(ctx: commands.Context, error):
 	print(error)
 	raise (error.with_traceback)
 
+
 #print("INIT_DB")
 databases = glob.glob("database/*.SKCYDB")
-if databases: # atm this loads any db, fix to load most recent later
+if databases:  # atm this loads any db, fix to load most recent later
 	database = SKCYfileio(databases[0], getpass.getpass())
 	rootdatabase = json.loads(database.read().decode("utf8"))
 else:
-	pass # add this later
+	pass  # add this later
 
 print("INIT_TOKEN")
 TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())
