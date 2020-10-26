@@ -8,7 +8,7 @@ from discord.ext import commands
 
 from SKCY11X import fileio as SKCYfileio
 
-print("BIGMANAGE BOT B20201022.1")  # X means borked, B is beta, R is release
+print("BIGMANAGE BOT B20201026.0")  # X means borked, B is beta, R is release
 
 logger.start()
 
@@ -98,15 +98,21 @@ async def on_command_error(ctx: commands.Context, error):
 	raise (error.with_traceback)
 
 
-#print("INIT_DB")
+print("INIT_DB")
 databases = glob.glob("database/*.SKCYDB")
 if databases:  # atm this loads any db, fix to load most recent later
 	database = SKCYfileio(databases[0], getpass.getpass())
 	rootdatabase = json.loads(database.read().decode("utf8"))
 else:
-	pass  # add this later
+	pass
+	#	print("BUILD_DB")
 
 print("INIT_TOKEN")
+TOKENFILE_EXISTS = glob.glob(".bot_token")
+if not TOKENFILE_EXISTS:  # if tokenfile does not exist then make one
+	print("BUILD_TOKEN")
+	import BM_GenerateToken
+	BM_GenerateToken.gentoken()
 TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())
 bot.run(TOKENFILE.read().decode("utf8"))
 print("Bot has turned off")
