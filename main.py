@@ -108,6 +108,8 @@ def recursivelyRetryStartup(depth):  # this will allow password retries
 			time.sleep(5)
 			print(f"\033[91mINCORRECT PASSWORD\033[0m")
 			return recursivelyRetryStartup(depth - 1)
+	else:  # if password wrong then reject token
+		return ""
 
 
 #print("INIT_DB")
