@@ -9,7 +9,7 @@ from discord.ext import commands
 
 from SKCY11X import fileio as SKCYfileio
 
-print("BIGMANAGE BOT B20201026.0")  # X means borked, B is beta, R is release
+print("BIGMANAGE BOT B20201026.1")  # X means borked, B is beta, R is release
 
 logger.start()
 
