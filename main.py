@@ -1,6 +1,7 @@
 import getpass
 import utils
 import glob, json
+import time
 
 import discord
 import logger
@@ -98,7 +99,18 @@ async def on_command_error(ctx: commands.Context, error):
 	raise (error.with_traceback)
 
 
-print("INIT_DB")
+def recursivelyRetryStartup(depth):  # this will allow password retries
+	if depth > 0:
+		TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())
+		try:
+			return TOKENFILE.read().decode("utf8")
+		except ValueError:
+			time.sleep(5)
+			print(f"\033[91mINCORRECT PASSWORD\033[0m")
+			return recursivelyRetryStartup(depth - 1)
+
+
+#print("INIT_DB")
 databases = glob.glob("database/*.SKCYDB")
 if databases:  # atm this loads any db, fix to load most recent later
 	database = SKCYfileio(databases[0], getpass.getpass())
@@ -107,12 +119,16 @@ else:
 	pass
 	#	print("BUILD_DB")
 
-print("INIT_TOKEN")
+print("\033[94mINIT_TOKEN\033[0m")
 TOKENFILE_EXISTS = glob.glob(".bot_token")
 if not TOKENFILE_EXISTS:  # if tokenfile does not exist then make one
-	print("BUILD_TOKEN")
+	print("\033[91mTOKEN\033[0m -> \033[94mBUILD_TOKEN\033[0m")
 	import BM_GenerateToken
 	BM_GenerateToken.gentoken()
-TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())
-bot.run(TOKENFILE.read().decode("utf8"))
-print("Bot has turned off")
+	print("\033[92mTOKEN\033[0m -> \033[94mRESUME\033[0m")
+
+try:
+	bot.run(recursivelyRetryStartup(3))
+except discord.errors.LoginFailure:
+	print("\033[91mTOKEN REJECTED\033[0m")
+print("\033[94mBOT_EXIT\033[0m")
