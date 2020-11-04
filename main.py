@@ -1,15 +1,12 @@
-import getpass
-import utils
-import glob, json
-import time
+import glob, json, time, getpass, signal
 
 import discord
-import logger
 from discord.ext import commands
 
 from SKCY11X import fileio as SKCYfileio
+import utils, logger
 
-print("BIGMANAGE BOT B20201026.1")  # X means borked, B is beta, R is release
+print("BIGMANAGE BOT B20201104.0")  # X means borked, B is beta, R is release
 
 logger.start()
 
@@ -99,17 +96,38 @@ async def on_command_error(ctx: commands.Context, error):
 	raise (error.with_traceback)
 
 
-def recursivelyRetryStartup(depth):  # this will allow password retries
-	if depth > 0:
-		TOKENFILE = SKCYfileio(".bot_token", getpass.getpass())
-		try:
-			return TOKENFILE.read().decode("utf8")
-		except ValueError:
-			time.sleep(5)
-			print(f"\033[91mINCORRECT PASSWORD\033[0m")
-			return recursivelyRetryStartup(depth - 1)
-	else:  # if password wrong then reject token
-		return ""
+def ctrl_c_exitHandler(sig, frame):
+	time.sleep(5)
+	print("")
+	exit()
+
+
+def recursivelyRetryPassword(depth, fileName):  # this will allow password retries
+	signal.signal(signal.SIGINT, ctrl_c_exitHandler)  # handle ctrl+c
+	try:
+		if depth > 0:
+			FILE = SKCYfileio(fileName, getpass.getpass())
+			try:
+				return FILE.read().decode("utf8")
+			except ValueError:
+				time.sleep(5)
+				print(f"\033[91mINCORRECT PASSWORD\033[0m")
+				return recursivelyRetryPassword(depth - 1, fileName)
+		else:  # if password wrong then return void
+			return None
+	except EOFError:  # handle ctrl+d
+		time.sleep(5)
+		print("")
+		exit()
+
+
+def testForToken():  # tests if token exists, if it does not then make one
+	TOKENFILE_EXISTS = glob.glob(".bot_token")
+	if not TOKENFILE_EXISTS:  # if tokenfile does not exist then make one
+		print("\033[91mTOKEN\033[0m -> \033[94mBUILD_TOKEN\033[0m")
+		import BM_GenerateToken
+		BM_GenerateToken.gentoken()
+		print("\033[92mTOKEN\033[0m -> \033[94mRESUME\033[0m")
 
 
 #print("INIT_DB")
@@ -121,16 +139,13 @@ else:
 	pass
 	#	print("BUILD_DB")
 
-print("\033[94mINIT_TOKEN\033[0m")
-TOKENFILE_EXISTS = glob.glob(".bot_token")
-if not TOKENFILE_EXISTS:  # if tokenfile does not exist then make one
-	print("\033[91mTOKEN\033[0m -> \033[94mBUILD_TOKEN\033[0m")
-	import BM_GenerateToken
-	BM_GenerateToken.gentoken()
-	print("\033[92mTOKEN\033[0m -> \033[94mRESUME\033[0m")
+testForToken()
 
-try:
-	bot.run(recursivelyRetryStartup(3))
+try:  # attempt to run the bot with the token
+	print("\033[94mINIT_TOKEN\033[0m")
+	TOKEN = recursivelyRetryPassword(3, ".bot_token")
+	if TOKEN:
+		bot.run(TOKEN)
 except discord.errors.LoginFailure:
 	print("\033[91mTOKEN REJECTED\033[0m")
-print("\033[94mBOT_EXIT\033[0m")
+print("\n\033[0;94mBOT_EXIT\033[0m")
