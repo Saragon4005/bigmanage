@@ -17,7 +17,10 @@ bot = commands.Bot(command_prefix='%', description='', case_insensitive=True, in
 
 @bot.command(name="test", help="Responds with 'works!' and versioninfo")
 async def test(ctx: commands.Context):
-	print('test triggered!')
+	try:  # command can break if it cannot print which is really fun
+		print('test triggered!')
+	except:
+		pass
 	await ctx.send(f"works! `{VerConfig}`")
 
 
