@@ -6,8 +6,6 @@ from discord.ext import commands
 from SKCY11X import fileio as SKCYfileio
 import utils, logger
 
-print("BIGMANAGE BOT B20201104.0")  # X means borked, B is beta, R is release
-
 logger.start()
 
 intents = discord.Intents(guild_messages=True, guilds=True)
@@ -17,10 +15,10 @@ allowedMentions = discord.AllowedMentions(everyone=False, users=False, roles=Fal
 bot = commands.Bot(command_prefix='%', description='', case_insensitive=True, intents=intents, allowed_mentions=allowedMentions)
 
 
-@bot.command(name="test", help="Responds with 'works!'")
+@bot.command(name="test", help="Responds with 'works!' and versioninfo")
 async def test(ctx: commands.Context):
 	print('test triggered!')
-	await ctx.send("works!")
+	await ctx.send(f"works! `{VerConfig}`")
 
 
 @bot.command(name="write", help="Sends a message to the specified channel, must be Admin to use.")
@@ -129,6 +127,17 @@ def testForToken():  # tests if token exists, if it does not then make one
 		BM_GenerateToken.gentoken()
 		print("\033[92mTOKEN\033[0m -> \033[94mRESUME\033[0m")
 
+
+def retVer(VerConfig):
+	p = VerConfig["stable"]
+	yyyy = str(VerConfig["date"][0])
+	mmdd = "".join(["0" * (2 - len(str(i))) + str(i) for i in VerConfig["date"][1:3]])
+	s = str(VerConfig["date"][3])
+	return p + yyyy + mmdd + "." + s
+
+
+VerConfig = {"date": [2020, 11, 4, 1], "stable": "B"}
+print(f"BIGMANAGE BOT {retVer(VerConfig)}")  # X means borked, B is beta, R is release
 
 #print("INIT_DB")
 databases = glob.glob("database/*.SKCYDB")
